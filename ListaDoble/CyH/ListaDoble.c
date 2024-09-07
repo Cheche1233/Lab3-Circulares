@@ -37,29 +37,31 @@ void pushFront(ListaDoble* lista, void* item) {
     Nodo* nodo = crearNodo();
     nodo->dato = item;
     if (lista->head == NULL) {
+        lista->head = nodo;
         lista->tail = nodo;
     } else {
         nodo->sig = lista->head;
         lista->head->prev = nodo;
+        lista->head = nodo;
     }
-    lista->head = nodo;
-    lista->head->prev = lista->tail;
     lista->size++;
 }
+
 
 void pushBack(ListaDoble* lista, void* item) {
     Nodo* nodo = crearNodo();
     nodo->dato = item;
     if (lista->tail == NULL) {
         lista->head = nodo;
+        lista->tail = nodo;
     } else {
         nodo->prev = lista->tail;
         lista->tail->sig = nodo;
+        lista->tail = nodo;
     }
-    lista->tail = nodo;
-    lista->tail->sig = lista->head;
     lista->size++;
 }
+
 
 void pushPos(ListaDoble* lista, int pos, void* item) {
     if (pos == 0) {
@@ -101,7 +103,6 @@ void printChar(void* letra){
 
 void mostrarLista(ListaDoble* lista, void (*func)(void*)) {
     if (lista->head == NULL) {
-        // Si la lista está vacía, no hacemos nada
         printf("La lista está vacía\n");
         return;
     }
@@ -109,11 +110,11 @@ void mostrarLista(ListaDoble* lista, void (*func)(void*)) {
     Nodo* actual = lista->head;
     int count = 0;
 
-    // Recorrer la lista hasta llegar al tamaño de la lista
+    
     while (count < lista->size) {
-        func(actual->dato);  // Aplicamos la función de impresión
-        actual = actual->sig;  // Avanzamos al siguiente nodo
-        count++;  // Incrementamos el contador
+        func(actual->dato); 
+        actual = actual->sig;
+        count++;
     }
     
     printf("\n");
@@ -122,22 +123,34 @@ void mostrarLista(ListaDoble* lista, void (*func)(void*)) {
 
 void liberarNodo(Nodo *nodo) {
     if (nodo != NULL) {
-        free(nodo->dato);
         free(nodo);
     }
 }
-void liberarLista(ListaDoble* lista) {
-    Nodo* current = lista->head;
-    Nodo* siguiente;
 
-    while (current != NULL) {
-        siguiente = current->sig;
-        liberarNodo(current);
-        current = siguiente;
-    }
+void liberarLista(ListaDoble* lista) {
+
+    Nodo* actual = lista->head;
+    Nodo* siguiente = NULL;
+    for (int count = 0; count < lista->size; ++count) {
+        
+        if (actual->dato != NULL) {
+            free(actual->dato);
+        }
+        free(actual);
     
-    free(lista);
+        actual = siguiente;
+    }
+
+    // Establecer los punteros en NULL y liberar la lista misma
+    lista->head = NULL;
+    lista->tail = NULL;
+    lista->size = 0;
+
+    free(lista);  // Liberar la lista misma
+    printf("Lista liberada correctamente\n");
 }
+
+
 
 /*
 ListaDoble* ordenarLista(ListaDoble* lista) {

@@ -68,8 +68,7 @@ int main() {
     liberarLista(lista2);
     liberarLista(listaConcaInicio);
     liberarLista(listaConcaFinal);
-    liberarLista(listaConcaPos);
-
+    
     return 0;
     
 }
